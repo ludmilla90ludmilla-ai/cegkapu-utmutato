@@ -1,7 +1,7 @@
 """PDF összefoglalók generálása (HU, EN, DE) a webes útmutató szövegeiből.
 
-Használat:  python pdf/build_pdf.py
-Eredmény:   pdf/Cegkapu-utmutato-HU.pdf, -EN.pdf, -DE.pdf
+Használat:  python pdf/build_pdf.py          → pdf/Cegkapu-utmutato-HU.pdf, -EN.pdf, -DE.pdf
+            python pdf/build_pdf.py <arculat> → arculati változat (az arculat.py-t igényli)
 
 A szövegek egyetlen forrása a ../cegkapu-utmutato.html (OFFICE, LINKS, STR).
 Ha ott javítasz, futtasd újra ezt a szkriptet. A PDF-specifikus feliratok
@@ -9,6 +9,7 @@ Ha ott javítasz, futtasd újra ezt a szkriptet. A PDF-specifikus feliratok
 """
 import pathlib
 import subprocess
+import sys
 import tempfile
 import time
 
@@ -26,15 +27,24 @@ def extract_data(src: str) -> str:
 
 
 def main() -> None:
+    name = sys.argv[1] if len(sys.argv) > 1 else None
     data = extract_data(GUIDE.read_text(encoding="utf-8"))
     html = TEMPLATE.read_text(encoding="utf-8").replace("/*DATA*/", data)
+    out_dir = HERE
     build = HERE / "build"
-    build.mkdir(exist_ok=True)
+    if name:
+        sys.path.insert(0, str(HERE.parent))
+        import arculat
+        html = arculat.apply(html, name, "pdf")
+        out_dir = arculat.out_dir(name) / "pdf"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        build = HERE / "build" / name
+    build.mkdir(parents=True, exist_ok=True)
     page = build / "osszefoglalo.html"
     page.write_text(html, encoding="utf-8")
 
     for lang in LANGS:
-        out = HERE / f"Cegkapu-utmutato-{lang.upper()}.pdf"
+        out = out_dir / f"Cegkapu-utmutato-{lang.upper()}.pdf"
         out.unlink(missing_ok=True)
         # Nyelvenként külön profil: közös profillal a következő indítás a még futó
         # példánynak adja át a feladatot, és csendben kilép. A zárfájlt az Edge a
@@ -52,7 +62,7 @@ def main() -> None:
             time.sleep(0.5)
         else:
             raise SystemExit(f"Nem készült el: {out.name}")
-        print("kész:", out.name)
+        print("kész:", out)
 
 
 if __name__ == "__main__":

@@ -167,7 +167,8 @@ function stepHtml(st, n) {
     ${st.note ? `<p class="note">${st.note}</p>` : ""}
   </div></li>`;
 }
-const bar = n => `<header class="bar"><div class="logo">${OFFICE.name}<small>${s.logoSub}</small></div><div class="edition">${P.edition} · ${n}/2</div></header>`;
+const mark = OFFICE.logo ? `<img src="${OFFICE.logo}" alt="${OFFICE.name}">` : OFFICE.name;
+const bar = n => `<header class="bar"><div class="logo">${mark}<small>${s.logoSub}</small></div><div class="edition">${P.edition} · ${n}/2</div></header>`;
 
 const allLinks = [
   ...s.yesSteps.flatMap(x => x.links || []),

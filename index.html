@@ -1037,7 +1037,8 @@ function renderChrome() {
   const s = S();
   document.documentElement.lang = lang;
   document.title = s.docTitle;
-  document.getElementById("logo").innerHTML = `${val(OFFICE.name)}<small>${s.logoSub}</small>`;
+  const mark = OFFICE.logo ? `<img src="${OFFICE.logo}" alt="${esc(OFFICE.name)}">` : val(OFFICE.name);
+  document.getElementById("logo").innerHTML = `${mark}<small>${s.logoSub}</small>`;
   document.querySelector(".track").setAttribute("aria-label", s.trackLabel);
 
   const langs = Object.keys(STR);

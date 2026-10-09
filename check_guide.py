@@ -1,7 +1,8 @@
 """A webes útmutató ellenőrzése fej nélküli Edge-dzsel.
 
-Használat:  python check_guide.py [hash ...]
+Használat:  python check_guide.py [--arculat NÉV] [hash ...]
             pl. python check_guide.py hu en-ut-a de-kesz-b
+                python check_guide.py --arculat <név> hu   → ellenorzes/<név>/ (az arculat.py-t igényli)
 
 Eredmény az ellenorzes/ mappában (nincs verziókövetve):
   teszt.png        – „ALL OK”, ha a három nyelv (hu/en/de) szótára ugyanazokat a
@@ -63,15 +64,22 @@ def shoot(url: str, png: pathlib.Path, size: str) -> None:
 
 
 def main() -> None:
-    OUT.mkdir(exist_ok=True)
+    global OUT
+    args = sys.argv[1:]
     src = SOURCE.read_text(encoding="utf-8")
+    if args[:1] == ["--arculat"]:
+        import arculat
+        name, args = args[1], args[2:]
+        src = arculat.apply(src, name, "web")
+        OUT = OUT / name
+    OUT.mkdir(parents=True, exist_ok=True)
     preview = OUT / "preview.html"
     preview.write_text(HEAD + src + "</body></html>", encoding="utf-8")
     test = OUT / "teszt.html"
     test.write_text(HEAD + src + TEST + "</body></html>", encoding="utf-8")
 
     shoot(test.as_uri(), OUT / "teszt.png", "1000,300")
-    for h in sys.argv[1:] or ["hu", "en-ut-a", "de-kesz-b"]:
+    for h in args or ["hu", "en-ut-a", "de-kesz-b"]:
         shoot(f"{preview.as_uri()}#{h}", OUT / f"{h}.png", "1280,1400")
         frame = OUT / f"mobil-{h}.html"
         frame.write_text(
