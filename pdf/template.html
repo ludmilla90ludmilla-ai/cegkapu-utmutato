@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cégkapu-útmutató – PDF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Montserrat:wght@400;600;700&family=Piazzolla:wght@400;700&display=swap&subset=latin-ext" rel="stylesheet">
+<style>
+/* Nyomtatott összefoglaló, A4 álló, 2 oldal. Arculat: viktoriawp.eu – egy kiemelőszín (éjkék),
+   Playfair cím / Montserrat szöveg, 20px-es kártya, árnyék nélkül. */
+:root {
+  --bg: #FFFFFF; --surface: #F0F0FF; --ink: #011111; --text: #4E4F56;
+  --accent: #02023B; --on-accent: #FFFFFF; --line: #DBDBDF;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-accent: "Piazzolla", Georgia, serif;
+}
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); }
+body { font-family: var(--font-body); color: var(--text); font-size: 8pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; color: var(--ink); margin: 0; }
+p { margin: 0; }
+strong { color: var(--ink); font-weight: 600; }
+
+.page { width: 210mm; height: 297mm; padding: 11mm 14mm 0; display: flex; flex-direction: column; gap: 4mm; overflow: hidden; break-after: page; position: relative; }
+.page:last-child { break-after: auto; }
+
+.bar { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 3mm; border-bottom: 1px solid var(--line); }
+.logo { font-family: var(--font-display); font-size: 15pt; color: var(--ink); line-height: 1.1; }
+.logo small { display: block; font-family: var(--font-body); font-size: 6.5pt; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text); margin-top: 1mm; }
+.edition { font-size: 7pt; font-weight: 600; color: var(--text); letter-spacing: .04em; }
+
+.eyebrow { font-family: var(--font-accent); font-weight: 700; font-size: 10.5pt; color: var(--accent); }
+h1 { font-size: 20pt; line-height: 1.15; margin-top: .5mm; }
+h2 { font-size: 16pt; line-height: 1.2; }
+.lead { font-size: 8.8pt; line-height: 1.45; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm; align-items: start; }
+.panel { background: var(--surface); border-radius: 14px; padding: 3.6mm 4.4mm; display: grid; gap: 1.3mm; align-content: start; }
+.panel h3 { font-size: 10.5pt; }
+.bullets { margin: 0; padding: 0; list-style: none; display: grid; gap: 1.2mm; }
+.bullets li { padding-left: 3.6mm; position: relative; }
+.bullets li::before { content: ""; position: absolute; left: 0; top: .55em; width: 1.4mm; height: 1.4mm; border-radius: 50%; background: var(--accent); }
+.callout { border-left: 2px solid var(--accent); padding-left: 3mm; color: var(--ink); font-weight: 600; }
+
+.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.role { border-top: 1.5px solid var(--accent); padding-top: 2mm; display: grid; gap: 1mm; }
+.role b { color: var(--ink); font-size: 9pt; }
+.tag { display: inline-block; margin-left: 1.5mm; font-size: 6.5pt; font-weight: 700; padding: .3mm 2mm; border-radius: 99px; background: var(--accent); color: var(--on-accent); vertical-align: 1px; }
+
+/* Döntési ábra: kérdés -> elágazó vonal -> három kártya */
+.flow h3 { font-size: 12pt; margin-bottom: 3mm; }
+.q { margin-inline: auto; width: fit-content; background: var(--accent); color: var(--on-accent); border-radius: 14px; padding: 3mm 6mm; font-weight: 600; font-size: 9.4pt; text-align: center; max-width: 150mm; }
+.rail { position: relative; height: 8mm; }
+.rail::before { content: ""; position: absolute; left: 50%; top: 0; height: 3mm; border-left: 1.5px solid var(--accent); }
+.rail::after { content: ""; position: absolute; left: calc(100% / 6); right: calc(100% / 6); top: 3mm; height: 5mm; border: 1.5px solid var(--accent); border-bottom: 0; }
+.rail i { position: absolute; left: 50%; top: 3mm; height: 5mm; border-left: 1.5px solid var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.card { background: var(--surface); border-radius: 14px; padding: 3.6mm 4.2mm 4mm; display: grid; gap: 1.4mm; align-content: start; }
+.kicker { justify-self: start; font-weight: 700; font-size: 7.6pt; color: var(--accent); border: 1.3px solid var(--accent); border-radius: 99px; padding: .3mm 2.6mm; background: var(--bg); }
+.card h4 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 11pt; color: var(--ink); line-height: 1.25; }
+.card h4 .letter { color: var(--accent); margin-right: 1.2mm; }
+.card .more { font-size: 7.4pt; font-weight: 700; color: var(--accent); margin-top: .5mm; }
+.card dl { margin: 0; display: grid; gap: 1mm; }
+.card dt { font-size: 6.4pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+.card dd { margin: 0; }
+
+/* 2. oldal: lépések három oszlopban */
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.col { display: grid; gap: 0; align-content: start; }
+.colhead { background: var(--accent); color: var(--on-accent); border-radius: 12px 12px 0 0; padding: 2.6mm 3.5mm; font-weight: 700; font-size: 8.8pt; }
+.steps { list-style: none; margin: 0; padding: 0 3.5mm 2mm; background: var(--surface); border-radius: 0 0 12px 12px; }
+.step { display: grid; grid-template-columns: 4mm 1fr; gap: 2mm; padding: 1.7mm 0; border-bottom: 1px solid var(--line); }
+.step:last-child { border-bottom: 0; }
+.box { width: 3.6mm; height: 3.6mm; border: 1.3px solid var(--accent); border-radius: 1mm; margin-top: .4mm; background: var(--bg); }
+.step b { display: block; color: var(--ink); font-size: 8.1pt; line-height: 1.3; margin-bottom: .6mm; }
+.step .n { color: var(--accent); }
+.step ul { margin: .6mm 0 0; padding-left: 3.5mm; display: grid; gap: .4mm; }
+.step .note { font-style: italic; font-size: 7pt; margin-top: .8mm; }
+.step.then { grid-template-columns: 1fr; font-weight: 600; color: var(--ink); }
+.path { font-weight: 600; color: var(--ink); background: var(--bg); padding: .2mm 1.2mm; border-radius: 1mm; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+.links { display: grid; gap: 1.6mm; margin: 0; }
+.links div { display: grid; }
+.links dt { font-weight: 600; color: var(--ink); }
+.links dd { margin: 0; color: var(--accent); overflow-wrap: anywhere; }
+.info { display: grid; gap: 3mm; align-content: start; }
+.info h3 { font-family: var(--font-accent); font-weight: 700; font-size: 10pt; color: var(--accent); margin-bottom: .8mm; }
+
+.gloss { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4mm 5mm; margin: 0; }
+.gloss div { display: grid; gap: .2mm; }
+.gloss dt { font-weight: 700; color: var(--ink); }
+.gloss dd { margin: 0; }
+.sectiontitle { font-family: var(--font-accent); font-weight: 700; font-size: 10pt; color: var(--accent); margin-bottom: 1.5mm; }
+
+.foot { margin-top: auto; margin-inline: -14mm; background: var(--accent); color: var(--on-accent); padding: 4mm 14mm 5mm; display: grid; gap: 1.5mm; }
+.foot h3 { color: var(--on-accent); font-size: 12pt; }
+.foot .contact { display: flex; flex-wrap: wrap; gap: 1mm 7mm; font-weight: 600; font-size: 8.6pt; }
+.foot .small { font-size: 6.8pt; opacity: .8; }
+.pageno { position: absolute; right: 14mm; top: 13mm; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- DATA: a webes útmutatóból generálva (OFFICE, LINKS, STR) -->
+<script>/*DATA*/</script>
+
+<script>
+/* PDF-specifikus szövegek. A tartalom többi része a webes útmutató STR szótárából jön. */
+const PDFSTR = {
+  hu: {
+    edition: "Összefoglaló · 2026. október",
+    flowT: "Melyik út az Öné?",
+    yesLbl: "Igen", noLbl: "Nincs / nem tudom", noSub: "két lehetőség",
+    routes: { igen: "Van Ügyfélkapu+", a: "A) Saját Ügyfélkapu+", b: "B) Ügyvédi út" },
+    leads: {
+      igen: "Ön regisztrálja a Cégkaput, és felvesz minket ügykezelőnek."
+    },
+    more: "Lépések: 2. oldal →",
+    page2Title: "Az Ön lépései útvonalanként",
+    thenYes: "Ezután kövesse a „Van Ügyfélkapu+” oszlop lépéseit.",
+    lawyerPrefix: "Ügyvédi úton:",
+    linksT: "Hasznos linkek"
+  },
+  en: {
+    edition: "Summary · October 2026",
+    flowT: "Which route is yours?",
+    yesLbl: "Yes", noLbl: "No / not sure", noSub: "two options",
+    routes: { igen: "Already has Client Gate+", a: "A) Your own Client Gate+", b: "B) Lawyer route" },
+    leads: {
+      igen: "You register the Company Gate and add us as case handlers."
+    },
+    more: "Steps: page 2 →",
+    page2Title: "Your steps, route by route",
+    thenYes: "Then follow the steps in the “Already has Client Gate+” column.",
+    lawyerPrefix: "Lawyer route:",
+    linksT: "Useful links"
+  },
+  de: {
+    edition: "Zusammenfassung · Oktober 2026",
+    flowT: "Welcher Weg passt zu Ihnen?",
+    yesLbl: "Ja", noLbl: "Nein / unsicher", noSub: "zwei Möglichkeiten",
+    routes: { igen: "Zugang zum Kundenportal vorhanden", a: "A) Eigener Zugang zum Kundenportal", b: "B) Über einen Rechtsanwalt" },
+    leads: {
+      igen: "Sie registrieren das Firmenportal und fügen uns als Sachbearbeiter hinzu."
+    },
+    more: "Schritte: Seite 2 →",
+    page2Title: "Ihre Schritte je nach Weg",
+    thenYes: "Danach folgen Sie den Schritten in der Spalte „Zugang zum Kundenportal vorhanden“.",
+    lawyerPrefix: "Über einen Rechtsanwalt:",
+    linksT: "Nützliche Links"
+  }
+};
+
+const lang = (location.hash.replace("#", "") || "hu");
+const s = STR[lang], P = PDFSTR[lang];
+document.documentElement.lang = lang;
+
+function stepHtml(st, n) {
+  return `<li class="step"><span class="box"></span><div>
+    <b><span class="n">${n}.</span> ${st.t}</b>
+    ${st.d ? `<p>${st.d}</p>` : ""}
+    ${st.list ? `<ul>${st.list.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}
+    ${st.note ? `<p class="note">${st.note}</p>` : ""}
+  </div></li>`;
+}
+const bar = n => `<header class="bar"><div class="logo">${OFFICE.name}<small>${s.logoSub}</small></div><div class="edition">${P.edition} · ${n}/2</div></header>`;
+
+const allLinks = [
+  ...s.yesSteps.flatMap(x => x.links || []),
+  ...s.aSteps.flatMap(x => x.links || [])
+];
+
+document.getElementById("root").innerHTML = `
+<section class="page">
+  ${bar(1)}
+  <div>
+    <div class="eyebrow">${s.start.eyebrow}</div>
+    <h1>${s.start.h}</h1>
+  </div>
+  <p class="lead">${s.start.lead}</p>
+
+  <div class="grid2">
+    <div class="panel"><h3>${s.cegkapu.eyebrow}</h3><ul class="bullets">${s.cegkapu.bullets.map(b => `<li>${b}</li>`).join("")}</ul></div>
+    <div class="panel"><h3>${s.start.route[1][0]}</h3><ul class="bullets">${s.ugyfelkapu.bullets.slice(1, 2).map(b => `<li>${b}</li>`).join("")}</ul><p class="callout">${s.ugyfelkapu.callout}</p></div>
+    <div class="panel"><h3>${s.cegkapu.askT}</h3><p>${s.cegkapu.ask}</p></div>
+    <div class="panel"><h3>${s.cegkapu.whyT}</h3><p>${s.cegkapu.why}</p></div>
+  </div>
+
+  <div class="roles">${s.cegkapu.roles.map(([t, d, tag]) => `<div class="role"><b>${t}${tag ? `<span class="tag">${tag}</span>` : ""}</b><span>${d}</span></div>`).join("")}</div>
+
+  <div class="flow">
+    <h3>${P.flowT}</h3>
+    <div class="q">${s.kerdes.h}</div>
+    <div class="rail"><i></i></div>
+    <div class="cards">
+      <div class="card"><span class="kicker">${P.yesLbl}</span><h4>${P.routes.igen}</h4><p>${P.leads.igen}</p><span class="more">${P.more}</span></div>
+      ${["a", "b"].map(k => `<div class="card"><span class="kicker">${P.noLbl}</span><h4><span class="letter">${k.toUpperCase()}</span>${s.nem[k].t}</h4>
+        <dl>
+          <div><dt>${s.nem.plus}</dt><dd>${s.nem[k].plus}</dd></div>
+          <div><dt>${s.nem.minus}</dt><dd>${s.nem[k].minus}</dd></div>
+        </dl><span class="more">${P.more}</span></div>`).join("")}
+    </div>
+  </div>
+</section>
+
+<section class="page">
+  ${bar(2)}
+  <h2>${P.page2Title}</h2>
+
+  <div class="cols">
+    <div class="col"><div class="colhead">${P.routes.igen}</div>
+      <ol class="steps">${s.yesSteps.map((st, i) => stepHtml(st, i + 1)).join("")}</ol></div>
+    <div class="col"><div class="colhead">${P.routes.a}</div>
+      <ol class="steps">${s.aSteps.map((st, i) => stepHtml(st, i + 1)).join("")}
+        <li class="step then"><p>${P.thenYes}</p></li></ol></div>
+    <div class="col"><div class="colhead">${P.routes.b}</div>
+      <ol class="steps">${s.bSteps.map((st, i) => stepHtml(st, i + 1)).join("")}</ol></div>
+  </div>
+
+  <div class="grid2">
+    <div class="info">
+      <div><h3>${s.kesz.oursT}</h3><p>${s.kesz.ours}</p></div>
+      <div><h3>${s.kesz.contactT}</h3><p>${s.kesz.contactText}</p></div>
+    </div>
+    <div class="info">
+      <div><h3>${P.linksT}</h3>
+      <dl class="links">${allLinks.map(([k, label]) => `<div><dt>${label}</dt><dd>${LINKS[k].replace(/^https:\/\//, "")}</dd></div>`).join("")}</dl></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <h3>${s.footerT}</h3>
+    <div class="contact"><span>${OFFICE.contactName}</span><span>${OFFICE.email}</span><span>${OFFICE.phone}</span><span>${OFFICE.web.replace(/^https?:\/\//, "").replace(/\/$/, "")}</span></div>
+    <p class="small">${s.footerNote}</p>
+  </footer>
+</section>`;
+document.title = s.docTitle;
+</script>
+</body>
+</html>

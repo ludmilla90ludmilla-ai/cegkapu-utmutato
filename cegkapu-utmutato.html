@@ -1,0 +1,1096 @@
+<title>Cégkapu-útmutató</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Montserrat:wght@400;600;700&family=Piazzolla:wght@400;700&display=swap&subset=latin-ext" rel="stylesheet">
+<style>
+/* Elrendezés: ragadós fejléc + útvonaljelző, középen egy keskeny olvasóoszlop képernyőnként, éjkék lábléc.
+   Arculat: viktoriawp.eu (egyetlen kiemelőszín, Playfair cím / Montserrat szöveg, 6px gomb, 20px kártya, árnyék csak a fejlécen). */
+:root {
+  --bg: #FFFFFF;
+  --surface: #F0F0FF;      /* levendula – szekció/kártya háttér */
+  --ink: #011111;          /* címsor */
+  --text: #62636A;         /* szövegtörzs */
+  --accent: #02023B;       /* éjkék – egyetlen kiemelőszín */
+  --on-accent: #FFFFFF;
+  --line: #DBDBDF;
+  --footer-bg: #02023B;
+  --footer-fg: #FFFFFF;
+  --todo-bg: #FFF4CC;      /* kitöltendő helyőrző – csak szerkesztés idejére */
+  --todo-fg: #5A4500;
+  --header-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-accent: "Piazzolla", Georgia, serif;
+
+  --radius-btn: 6px;
+  --radius-card: 20px;
+  --col: 760px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #07071F; --surface: #111140; --ink: #F3F3FF; --text: #B4B5C8;
+    --accent: #D9D9FF; --on-accent: #02023B; --line: #2B2B5C;
+    --footer-bg: #111140; --footer-fg: #F3F3FF;
+    --todo-bg: #3A3110; --todo-fg: #FFE7A0;
+    --header-shadow: 0 5px 10px rgba(0, 0, 0, .45);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #07071F; --surface: #111140; --ink: #F3F3FF; --text: #B4B5C8;
+  --accent: #D9D9FF; --on-accent: #02023B; --line: #2B2B5C;
+  --footer-bg: #111140; --footer-fg: #F3F3FF;
+  --todo-bg: #3A3110; --todo-fg: #FFE7A0;
+  --header-shadow: 0 5px 10px rgba(0, 0, 0, .45);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent); color: var(--on-accent); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; color: var(--ink); margin: 0; text-wrap: balance; }
+h1 { font-size: 48px; line-height: 1.25; }
+h2 { font-size: 36px; line-height: 1.3; }
+h3 { font-size: 22px; line-height: 1.35; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: 3px; }
+strong { color: var(--ink); font-weight: 600; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- Fejléc ---------- */
+.header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--bg);
+  box-shadow: var(--header-shadow);
+}
+.header__inner {
+  max-width: 1260px; margin-inline: auto;
+  padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.logo { font-family: var(--font-display); font-size: 24px; color: var(--ink); line-height: 1.2; }
+.logo small { display: block; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text); }
+.langs { display: flex; gap: 4px; }
+.langs button {
+  font: 600 14px/1 var(--font-body); color: var(--ink);
+  background: transparent; border: 2px solid transparent; border-radius: var(--radius-btn);
+  padding: 8px 10px; cursor: pointer;
+}
+.langs button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Útvonaljelző ---------- */
+.track { border-top: 1px solid var(--line); }
+.track ol {
+  list-style: none; margin: 0 auto; padding: 10px 20px;
+  max-width: 1260px;
+  display: flex; gap: 6px 22px; flex-wrap: wrap; justify-content: center;
+  font-size: 13px; font-weight: 600;
+}
+.track li { display: flex; align-items: center; gap: 8px; color: var(--text); opacity: .6; }
+.track li .n {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1.5px solid currentColor; font-size: 12px;
+}
+.track li.done { opacity: 1; }
+.track li.current { opacity: 1; color: var(--accent); }
+.track li.current .n { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+/* ---------- Tartalom ---------- */
+main { padding-inline: 20px; padding-block: 56px 72px; }
+.screen { max-width: var(--col); margin-inline: auto; display: grid; gap: 28px; }
+.screen:focus { outline: none; }
+.eyebrow { font-family: var(--font-accent); font-weight: 700; font-size: 19px; color: var(--accent); line-height: 1.3; }
+.head { display: grid; gap: 10px; }
+.lead { font-size: 18px; line-height: 1.65; }
+.meta { font-size: 14px; font-weight: 600; color: var(--ink); }
+
+.bullets { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.bullets li { padding-left: 22px; position: relative; }
+.bullets li::before { content: ""; position: absolute; left: 2px; top: .7em; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+.panel { background: var(--surface); border-radius: var(--radius-card); padding: 28px 30px; display: grid; gap: 10px; align-content: start; }
+.panel h3 { font-size: 20px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+
+.roles { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.role { display: grid; grid-template-columns: minmax(150px, 220px) 1fr; gap: 6px 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.role dt { font-weight: 700; color: var(--ink); }
+.role dd { margin: 0; }
+.tag { display: inline-block; margin-left: 6px; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--accent); color: var(--on-accent); vertical-align: 1px; }
+
+.callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 18px; color: var(--ink); font-weight: 600; }
+
+/* Térkép a nyitóképernyőn: az út négy állomása */
+.route { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; counter-reset: r; }
+.route > div { position: relative; padding: 18px 16px 0 0; border-top: 2px solid var(--accent); }
+.route > div::before {
+  content: ""; position: absolute; top: -7px; left: 0;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--accent);
+}
+.route b { display: block; color: var(--ink); font-size: 15px; margin-bottom: 4px; }
+.route span { font-size: 14px; line-height: 1.5; display: block; }
+
+/* Lépések */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.step { display: grid; grid-template-columns: 56px 1fr; gap: 4px 18px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.step:first-child { border-top: 1px solid var(--line); }
+.step .num { font-family: var(--font-body); font-size: 34px; font-weight: 700; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.step h3 { font-family: var(--font-body); font-size: 17px; font-weight: 700; line-height: 1.4; margin-bottom: 4px; }
+.step .body { display: grid; gap: 8px; min-width: 0; }
+.step ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step .note { font-size: 14px; font-style: italic; }
+.step .group { grid-column: 1 / -1; }
+.steps .divider { list-style: none; padding: 22px 0 6px; font-family: var(--font-accent); font-weight: 700; font-size: 17px; color: var(--accent); }
+.path { font-weight: 600; color: var(--ink); background: var(--surface); padding: 2px 8px; border-radius: var(--radius-btn); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.links { display: flex; flex-wrap: wrap; gap: 6px 18px; font-weight: 600; font-size: 15px; }
+.links a::after { content: "\00a0↗"; }
+
+/* Választókártyák */
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+.choice { background: var(--surface); border-radius: var(--radius-card); padding: 28px 28px 30px; display: grid; gap: 14px; align-content: start; }
+.choice .letter { font-family: var(--font-display); font-size: 44px; line-height: 1; color: var(--accent); }
+.choice dl { margin: 0; display: grid; gap: 10px; }
+.choice dt { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+.choice dd { margin: 0; }
+.choice .btn { justify-self: start; margin-top: 6px; }
+
+.answers { display: grid; gap: 12px; }
+.answer {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  width: 100%; text-align: left;
+  font: 600 18px/1.4 var(--font-body); color: var(--ink);
+  background: var(--surface); border: 2px solid transparent; border-radius: var(--radius-card);
+  padding: 20px 24px; cursor: pointer;
+}
+.answer:hover { border-color: var(--accent); }
+.answer::after { content: "→"; color: var(--accent); font-size: 22px; }
+.hint { font-size: 15px; }
+
+/* Gombok */
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn {
+  display: inline-block; padding: 15px 30px;
+  border: 2px solid var(--accent); border-radius: var(--radius-btn);
+  background: var(--accent); color: var(--on-accent);
+  font: 700 14px/1 var(--font-body); text-transform: uppercase; letter-spacing: .02em;
+  text-decoration: none; cursor: pointer;
+}
+.btn:hover { opacity: .88; }
+.btn--ghost { background: transparent; color: var(--accent); }
+.btn--ghost:hover { background: var(--accent); color: var(--on-accent); opacity: 1; }
+.textbtn { background: none; border: 0; padding: 0; font: 700 15px/1.4 var(--font-body); color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Összegzés */
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.checklist li { border-bottom: 1px solid var(--line); }
+.checklist label { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; cursor: pointer; color: var(--ink); font-weight: 600; }
+.checklist input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); flex: none; }
+.checklist input:checked + span { text-decoration: line-through; color: var(--text); font-weight: 400; }
+.chip { display: inline-block; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 99px; border: 1.5px solid var(--accent); color: var(--accent); }
+dl { margin: 0; }
+.datarow { display: grid; grid-template-columns: 1fr; gap: 0; padding: 6px 0; }
+.datarow dt { font-size: 13px; font-weight: 600; color: var(--ink); }
+.datarow dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.todo { background: var(--todo-bg); color: var(--todo-fg); padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+
+/* Fogalomtár */
+.glossary { max-width: var(--col); margin: 56px auto 0; border-top: 1px solid var(--line); padding-top: 8px; }
+.glossary summary { cursor: pointer; padding: 14px 0; font-family: var(--font-accent); font-weight: 700; font-size: 18px; color: var(--accent); }
+.glossary dl { margin: 0 0 8px; display: grid; gap: 0; }
+.glossary div { display: grid; grid-template-columns: minmax(140px, 200px) 1fr; gap: 4px 20px; padding: 10px 0; border-top: 1px solid var(--line); }
+.glossary dt { font-weight: 700; color: var(--ink); }
+.glossary dd { margin: 0; }
+
+/* Lábléc */
+footer { background: var(--footer-bg); color: var(--footer-fg); padding-inline: 20px; padding-block: 48px 36px; }
+footer .inner { max-width: var(--col); margin-inline: auto; display: grid; gap: 18px; }
+footer h2 { color: var(--footer-fg); font-size: 26px; }
+footer a { color: var(--footer-fg); }
+footer .contact { display: flex; flex-wrap: wrap; gap: 6px 28px; font-weight: 600; }
+footer .small { font-size: 13px; opacity: .8; border-top: 1px solid rgba(255,255,255,.2); padding-top: 16px; }
+footer .todo { color: var(--todo-fg); }
+
+@media (max-width: 767px) {
+  h1 { font-size: 32px; } h2 { font-size: 26px; } h3 { font-size: 19px; }
+  main { padding-block: 36px 56px; }
+  .lead { font-size: 17px; }
+  .route { grid-template-columns: 1fr; }
+  .route > div { border-top: 0; border-left: 2px solid var(--accent); padding: 0 0 18px 20px; }
+  .route > div::before { top: 2px; left: -7px; }
+  .role, .glossary div { grid-template-columns: 1fr; }
+  .header__inner { flex-wrap: nowrap; gap: 10px; }
+  .logo { font-size: 21px; min-width: 0; }
+  .logo small { font-size: 10px; letter-spacing: .05em; }
+  .langs button { padding: 8px 7px; }
+  .step { grid-template-columns: 40px 1fr; gap: 4px 12px; }
+  .step .num { font-size: 26px; }
+  .panel, .choice { padding: 24px 22px; }
+  .track ol { justify-content: flex-start; gap: 6px 14px; }
+  .track li .t { display: none; }
+  .track li.current .t { display: inline; }
+}
+@media print {
+  .header, .track, .actions, .glossary summary { display: none !important; }
+  .glossary { display: block; }
+  main { padding: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .screen { animation: in .25s ease both; }
+  @keyframes in { from { transform: translateY(6px); } to { transform: none; } }
+}
+</style>
+
+<header class="header">
+  <div class="header__inner">
+    <div class="logo" id="logo"></div>
+    <div class="langs" id="langs" role="group" aria-label="Nyelv / Language"></div>
+  </div>
+  <nav class="track" aria-label="Útvonal"><ol id="track"></ol></nav>
+</header>
+
+<main>
+  <section class="screen" id="screen" tabindex="-1" aria-live="polite"></section>
+  <details class="glossary" id="glossary"></details>
+</main>
+
+<footer><div class="inner" id="footer"></div></footer>
+
+<script>
+/* ============================================================
+   IRODAI ADATOK – ezeket kell kitölteni.
+   A „[...]" formájú értékeket az oldal sárgán jelöli, amíg nincsenek kitöltve.
+   ============================================================ */
+const OFFICE = {
+  name: "Tamás Viktória",
+  contactName: "Tamás Viktória",
+  email: "info@viktoriawp.eu",
+  phone: "+36 30 826 4775",
+  web: "https://viktoriawp.eu/"
+  // Az ügykezelők adatai szándékosan nincsenek itt: cégenként változnak,
+  // ezért az iroda külön Excel-táblázatban küldi meg őket az útmutató mellé.
+};
+
+/* ============================================================
+   SZÖVEGEK – nyelvenként. Új nyelv = új kulcs ugyanezzel a szerkezettel.
+   ============================================================ */
+const LINKS = {
+  tarhely: "https://tarhely.gov.hu/ckp-regisztracio/",
+  idopont: "https://idopontfoglalo.kh.gov.hu/",
+  kulkepviselet: "https://konzuliszolgalat.kormany.hu/kulkepviseletek/osszes#magyarorszag-kulkepviseletei-kulfoldon",
+  ukplusz: "https://kau.gov.hu/dap/sugo/ugyfelkapu-plusz"
+};
+
+const STR = {
+  hu: {
+    langName: "Magyar",
+    docTitle: "Cégkapu-útmutató",
+    logoSub: "Cégkapu-útmutató",
+    trackLabel: "Útvonal",
+    track: ["Cégkapu", "Ügyfélkapu+", "Az Ön helyzete", "Teendők", "Összegzés"],
+    back: "Vissza",
+    next: "Tovább",
+    toSummary: "Tovább az összegzéshez",
+    restart: "Újrakezdés",
+    otherRoute: "Másik lehetőség megnézése",
+
+    start: {
+      eyebrow: "Új ügyfeleinknek",
+      h: "Hozzáférés a cég hivatalos postafiókjához",
+      lead: "Ahhoz, hogy a magyar hatóságokkal az Ön cége nevében kapcsolatot tarthassunk, hozzáférés kell a cég hivatalos elektronikus postafiókjához, a <strong>Cégkapuhoz</strong>. Ez az útmutató néhány rövid kérdés alapján megmutatja, mi a teendője.",
+      meta: "Kb. 5 perc elolvasni",
+      routeTitle: "Így áll össze",
+      route: [
+        ["Cégkapu", "A cég hivatalos postafiókja a hatóságok felé."],
+        ["Ügyfélkapu+", "Ezzel azonosítja magát az, aki a Cégkaput regisztrálja."],
+        ["Ön vagy ügyvédje", "Regisztrálja a Cégkaput, és kezeli a hozzáféréseket."],
+        ["Mi, ügykezelőként", "Intézzük a cég hatósági ügyeit."]
+      ],
+      btn: "Kezdjük"
+    },
+
+    cegkapu: {
+      eyebrow: "Mi a Cégkapu?",
+      h: "A cég hivatalos elektronikus postafiókja",
+      bullets: [
+        "Minden magyarországi cégnek kötelező, 2018 óta.",
+        "Ide küldi a leveleit az adóhatóság (NAV), a cégbíróság és a többi hatóság. A cég hivatalos levelezése szinte teljes egészében itt zajlik, ezért fontos, hogy valaki rendszeresen figyelje."
+      ],
+      askT: "Mit kérünk?",
+      ask: "Vegyen fel minket a Cégkapun <strong>ügykezelőnek</strong>. Így mi vesszük át a cég adóhatósági leveleit, szükség esetén eljárunk a cég nevében az adóhatóságoknál, és ha valamiben az Ön döntésére vagy közreműködésére van szükség, tájékoztatjuk a teendőkről.",
+      whyT: "Miért jó ez Önnek?",
+      why: "A szolgáltatásunkkal összefüggő ügyekben mi leszünk a cég kapcsolattartója az adóhatóságok felé. Önnek nem kell a magyar hivatali levelezéssel foglalkoznia: mi figyeljük, mi érkezik, és csak akkor keressük, ha valóban szükség van Önre.",
+      rolesT: "Ki kicsoda a Cégkapun?",
+      roles: [
+        ["Cégkapu-megbízott", "Regisztrálja a Cégkaput, és kezeli a hozzáféréseket. Ezt a szerepet nem mi töltjük be: Ön látja el, vagy az Ön által megbízott ügyvéd.", ""],
+        ["Ügykezelő", "Hozzáfér a cég hivatalos leveleihez, és intézi a hatósági ügyeket.", "Ez leszünk mi"]
+      ]
+    },
+
+    ugyfelkapu: {
+      eyebrow: "Mi kell hozzá?",
+      h: "Ügyfélkapu+: magyar digitális azonosítás",
+      bullets: [
+        "A Cégkaput egy <strong>magánszemélynek</strong> kell regisztrálnia. Ez általában a cég vezetője (ügyvezető, igazgató), vagy az, akit erre meghatalmaz.",
+        "Ehhez magyar elektronikus azonosítás kell: az <strong>Ügyfélkapu+</strong> (felhasználónév, jelszó és egy telefonos hitelesítő alkalmazás kódja) vagy a <strong>DÁP</strong> mobilalkalmazás.",
+        "Úgy működik, mint egy magyar digitális személyi igazolvány."
+      ],
+      callout: "Az Ügyfélkapu+-t külföldi állampolgárok is igényelhetik. A DÁP alkalmazás viszont elsősorban magyar állampolgároknak érhető el, ezért külföldi állampolgárként az Ügyfélkapu+ az Ön útja."
+    },
+
+    kerdes: {
+      eyebrow: "Az Ön helyzete",
+      h: "Rendelkezik a cég vezetője Ügyfélkapu+ vagy DÁP hozzáféréssel?",
+      yes: "Igen, van",
+      no: "Nincs",
+      unsure: "Nem tudom",
+      hint: "Ha soha nem járt személyesen magyar kormányablakban vagy konzulátuson ilyen ügyben, akkor valószínűleg nincs."
+    },
+
+    nem: {
+      eyebrow: "Az Ön helyzete",
+      h: "Két lehetősége van",
+      unsureNote: "Ha nem biztos benne, kezelje úgy, hogy nincs. Ha mégis kiderül, hogy van, az „Igen” út is nyitva áll.",
+      unsureLink: "Mégis van hozzáférése? Ide kattintson.",
+      what: "Mit jelent?",
+      plus: "Előny",
+      minus: "Amire számítson",
+      a: {
+        t: "Saját Ügyfélkapu+",
+        what: "Egyszer személyesen megjelenik egy magyar kormányablakban vagy egy magyar nagykövetségen/konzulátuson az Ön országában. Utána Ön regisztrálja a Cégkaput, és Ön lesz a megbízott.",
+        plus: "Ingyenes. A cég postafiókja felett közvetlenül Ön rendelkezik.",
+        minus: "Időpontot kell foglalnia, és el kell mennie.",
+        btn: "Ezt választom"
+      },
+      b: {
+        t: "Ügyvéd intézi Ön helyett",
+        what: "Meghatalmaz egy magyar ügyvédet, aki regisztrálja a Cégkaput, ellátja a megbízott szerepét, és felvesz minket ügykezelőnek.",
+        plus: "Nem kell utaznia és időpontot foglalnia.",
+        minus: "Ügyvédi díj. Meghatalmazást kell aláírnia.",
+        btn: "Ezt választom"
+      }
+    },
+
+    igen: {
+      eyebrow: "Teendők",
+      h: "Regisztrálja a Cégkaput, és vegyen fel minket",
+      altT: "Nem szeretné Ön ellátni a Cégkapu-megbízott szerepet?",
+      altBtn: "Válassza az ügyvédi utat"
+    },
+    yesSteps: [
+      { t: "Lépjen be a Cégkapu regisztrációs oldalán",
+        d: "Lépjen be az Ügyfélkapu+ vagy a DÁP adataival.",
+        links: [["tarhely", "Cégkapu regisztráció (tarhely.gov.hu)"]],
+        check: "Belépés a tarhely.gov.hu oldalon" },
+      { t: "Regisztrálja a cég Cégkapuját",
+        d: "Válassza ki a cég formáját, és adja meg az adatait. A rendszer ellenőrzi őket a cégjegyzékben. Ezzel Ön lesz a <strong>Cégkapu-megbízott</strong>.",
+        note: "Ha a cégnek már van Cégkapuja, ez a lépés kimarad.",
+        check: "A Cégkapu regisztrálása" },
+      { t: "Vegyen fel minket ügykezelőnek",
+        d: "<span class=\"path\">Beállítások → a cég kiválasztása → Ügykezelő regisztrálása</span>",
+        note: "Az ügykezelőként felveendő munkatársaink adatait a mellékelt Excel-táblázatban küldjük meg.",
+        check: "Felvett minket ügykezelőnek" },
+      { t: "Írjon nekünk",
+        d: "Mi jóváhagyjuk a meghívást, és visszaigazoljuk, hogy minden rendben van.",
+        check: "Jelzés nekünk" }
+    ],
+
+    utA: {
+      eyebrow: "Teendők: saját Ügyfélkapu+",
+      h: "Előbb Ügyfélkapu+, utána a Cégkapu",
+      part1: "Ügyfélkapu+ igénylése",
+      part2: "Utána: Cégkapu és ügykezelő"
+    },
+    aSteps: [
+      { t: "Foglaljon időpontot",
+        d: "Magyarországon bármelyik kormányablakba, külföldön az Ön országában lévő magyar nagykövetségre vagy konzulátusra.",
+        links: [["idopont", "Kormányablak időpontfoglalás"], ["kulkepviselet", "Magyar külképviseletek listája"]],
+        check: "Időpont foglalása" },
+      { t: "Vigye magával",
+        list: [
+          "EU/EGT- vagy svájci állampolgárként: érvényes <strong>útlevél vagy személyi igazolvány</strong>",
+          "Más állampolgárként: érvényes <strong>útlevél</strong>",
+          "Egy <strong>e-mail-címet</strong>, amelyet rendszeresen olvas",
+          "Az okostelefonját"
+        ],
+        check: "Személyes megjelenés az okmánnyal" },
+      { t: "Kapcsolja be a kétlépcsős belépést",
+        d: "A helyszínen létrehozzák az Ügyfélkapu-fiókját. Otthon telepítsen egy hitelesítő alkalmazást (pl. Google Authenticator vagy Microsoft Authenticator), és kapcsolja be az <strong>Ügyfélkapu+</strong> belépést.",
+        note: "A DÁP mobilalkalmazás külföldi állampolgárok számára jellemzően nem elérhető, és külképviseleten nem is lehet rá regisztrálni.",
+        links: [["ukplusz", "Ügyfélkapu+ súgó"]],
+        check: "Ügyfélkapu+ bekapcsolása" }
+    ],
+
+    utB: {
+      eyebrow: "Teendők: ügyvédi út",
+      h: "Egy ügyvéd intézi Ön helyett"
+    },
+    bSteps: [
+      { t: "Kérjen tőlünk ügyvédi elérhetőséget",
+        d: "Válaszoljon annak, aki ezt az útmutatót Önnek elküldte, és kérje, hogy adjuk meg egy ügyvéd elérhetőségét, akivel együtt dolgozunk.",
+        check: "Ügyvédi elérhetőség kérése tőlünk" },
+      { t: "Írja alá a meghatalmazást",
+        d: "Az ügyvéd elkészíti a meghatalmazást, és megmondja, hogyan kell aláírni, valamint milyen dokumentumokat kell még elküldeni neki.",
+        check: "A meghatalmazás aláírása és elküldése" },
+      { t: "Az ügyvéd regisztrálja a Cégkaput",
+        d: "Ellátja a <strong>Cégkapu-megbízott</strong> szerepét, és felvesz minket ügykezelőnek.",
+        check: "Az ügyvéd regisztrálta a Cégkaput" },
+      { t: "Mi jóváhagyjuk a meghívást",
+        d: "és visszaigazoljuk Önnek, hogy minden rendben van.",
+        check: "Visszaigazolás tőlünk" }
+    ],
+
+    kesz: {
+      eyebrow: "Összegzés",
+      h: "Az Ön teendőlistája",
+      routes: { igen: "Van Ügyfélkapu+", a: "Saját Ügyfélkapu+", b: "Ügyvédi út" },
+      checkHint: "Kipipálhatja, amivel megvan. A pipák csak ebben a böngészőben látszanak.",
+      oursT: "Mit adunk meg mi?",
+      ours: "Az ügykezelőként felveendő munkatársaink adatait külön <strong>Excel-táblázatban</strong> küldjük meg, ezt az útmutató mellé csatoltuk.",
+      oursB: "Az ügykezelőként felveendő munkatársaink adatait az ügyvéd közvetlenül tőlünk kapja meg, ezzel Önnek nincs teendője.",
+      contactT: "Kérdése van?",
+      contactText: "Írjon annak, aki ezt az útmutatót Önnek elküldte, és szívesen segítünk."
+    },
+
+
+    glossaryT: "Fogalomtár",
+    glossary: [
+      ["Cégkapu", "A cég hivatalos elektronikus postafiókja."],
+      ["Cégkapu-megbízott", "Aki a Cégkaput regisztrálta, és kezeli a hozzáféréseket (Ön vagy az ügyvédje)."],
+      ["Ügykezelő", "Akinek a megbízott hozzáférést adott a cég leveleihez. Ez leszünk mi."],
+      ["Ügyfélkapu+", "Magyar elektronikus azonosítás magánszemélyeknek, kétlépcsős belépéssel."],
+      ["DÁP", "A Digitális Állampolgárság mobilalkalmazás, az Ügyfélkapu+ alternatívája, elsősorban magyar állampolgároknak."],
+      ["Kormányablak", "Magyar kormányzati ügyfélszolgálati iroda."]
+    ],
+
+    footerT: "Kérdése van? Keressen minket.",
+    footerNote: "Az útmutató a 2026. októberi szabályokat követi. Források: tarhely.gov.hu, kau.gov.hu, a magyar külképviseletek tájékoztatói."
+  },
+
+  en: {
+    langName: "English",
+    docTitle: "Company Gate Guide",
+    logoSub: "Company Gate guide",
+    trackLabel: "Progress",
+    track: ["Company Gate", "Client Gate+", "Your situation", "Your steps", "Summary"],
+    back: "Back",
+    next: "Next",
+    toSummary: "Go to summary",
+    restart: "Start over",
+    otherRoute: "See the other option",
+
+    start: {
+      eyebrow: "For our new clients",
+      h: "Access to your company’s official mailbox",
+      lead: "To deal with the Hungarian authorities on your company’s behalf, we need access to its official electronic mailbox, called the <strong>Company Gate</strong> (Hungarian: <em>Cégkapu</em>). This guide asks a few short questions and then shows you exactly what to do.",
+      meta: "About 5 minutes to read",
+      routeTitle: "How it fits together",
+      route: [
+        ["Company Gate", "Your company’s official mailbox for communication with the authorities."],
+        ["Client Gate+ (Hungarian: Ügyfélkapu+)", "The login that identifies the person who registers the Company Gate."],
+        ["You or your lawyer", "Registers the Company Gate and manages who has access."],
+        ["Us, as case handlers", "We deal with your company’s matters with the authorities."]
+      ],
+      btn: "Let’s start"
+    },
+
+    cegkapu: {
+      eyebrow: "What is the Company Gate?",
+      h: "Your company’s official electronic mailbox",
+      bullets: [
+        "It has been mandatory for every Hungarian company since 2018.",
+        "The tax authority (NAV), the court of registration and other authorities send their letters here. Almost all of the company’s official correspondence happens here, so someone needs to check it regularly."
+      ],
+      askT: "What do we ask of you?",
+      ask: "Add us to the Company Gate as <strong>case handlers</strong> (<em>ügykezelő</em>). This lets us receive the company’s letters from the tax authorities, act on the company’s behalf before the tax authorities when needed, and tell you what to do whenever your decision or input is required.",
+      whyT: "Why is this good for you?",
+      why: "For matters related to our services, we become your company’s contact with the tax authorities. You don’t have to deal with Hungarian official correspondence: we keep an eye on what arrives and only contact you when we really need you.",
+      rolesT: "Who is who in the Company Gate?",
+      roles: [
+        ["Company Gate administrator (Cégkapu-megbízott)", "Registers the Company Gate and manages access to it. We do not take on this role: it is held by you or by a lawyer you appoint.", ""],
+        ["Case handler (ügykezelő)", "Has access to the company’s official letters and handles matters with the authorities.", "That’s us"]
+      ]
+    },
+
+    ugyfelkapu: {
+      eyebrow: "What is needed?",
+      h: "Client Gate+: Hungarian digital identification",
+      bullets: [
+        "The Company Gate has to be registered by an <strong>individual</strong>. This is usually the company’s managing director, or someone the company authorises.",
+        "This person needs a Hungarian electronic identification: <strong>Client Gate+</strong> (a username, a password and a code from an authenticator app on your phone) or the <strong>DÁP</strong> mobile app.",
+        "It works like a Hungarian digital ID card."
+      ],
+      callout: "Foreign citizens can also apply for Client Gate+. The DÁP app, however, is mainly available to Hungarian citizens, so as a foreign citizen, Client Gate+ is the way to go."
+    },
+
+    kerdes: {
+      eyebrow: "Your situation",
+      h: "Does the company’s managing director have Client Gate+ or DÁP access?",
+      yes: "Yes",
+      no: "No",
+      unsure: "I’m not sure",
+      hint: "If the managing director has never been in person to a Hungarian government office (kormányablak) or consulate to set this up, they most likely don’t have it."
+    },
+
+    nem: {
+      eyebrow: "Your situation",
+      h: "You have two options",
+      unsureNote: "If you’re not sure, assume there is no access. If it turns out there is, the “Yes” route is still open.",
+      unsureLink: "Have access after all? Click here.",
+      what: "What it means",
+      plus: "Advantage",
+      minus: "What to expect",
+      a: {
+        t: "Your own Client Gate+",
+        what: "You go once in person to a Hungarian government office (kormányablak) in Hungary, or to a Hungarian embassy or consulate in your country. Then you register the Company Gate yourself and become its administrator.",
+        plus: "Free of charge. You keep direct control of the company’s mailbox.",
+        minus: "You need to book an appointment and go in person.",
+        btn: "Choose this"
+      },
+      b: {
+        t: "A lawyer does it for you",
+        what: "You authorise a Hungarian lawyer, who registers the Company Gate, acts as its administrator and adds us as case handlers.",
+        plus: "No travel and no appointment needed.",
+        minus: "Lawyer’s fee. You need to sign a power of attorney.",
+        btn: "Choose this"
+      }
+    },
+
+    igen: {
+      eyebrow: "Your steps",
+      h: "Register the Company Gate and add us",
+      altT: "Don’t want to be the Company Gate administrator yourself?",
+      altBtn: "Choose the lawyer route"
+    },
+    yesSteps: [
+      { t: "Log in on the Company Gate registration page",
+        d: "Log in with your Client Gate+ or DÁP details.",
+        links: [["tarhely", "Company Gate registration (tarhely.gov.hu)"]],
+        check: "Logged in on tarhely.gov.hu" },
+      { t: "Register the Company Gate for your company",
+        d: "Select the company’s legal form and enter its details. The system checks them against the company register. This makes you the <strong>Company Gate administrator</strong>.",
+        note: "If the company already has a Company Gate, skip this step.",
+        check: "Company Gate registered" },
+      { t: "Add us as case handlers",
+        d: "<span class=\"path\">Beállítások (Settings) → select the company → Ügykezelő regisztrálása (Register case handler)</span>",
+        note: "We send the details of the colleagues to be added as case handlers in the attached Excel spreadsheet.",
+        check: "Added us as case handlers" },
+      { t: "Let us know",
+        d: "We accept the invitation and confirm that everything is in order.",
+        check: "Told us it’s done" }
+    ],
+
+    utA: {
+      eyebrow: "Your steps: your own Client Gate+",
+      h: "First Client Gate+, then the Company Gate",
+      part1: "Getting Client Gate+",
+      part2: "Then: Company Gate and case handlers"
+    },
+    aSteps: [
+      { t: "Book an appointment",
+        d: "In Hungary at any government office (kormányablak); abroad at the Hungarian embassy or consulate in your country.",
+        links: [["idopont", "Government office appointments (in Hungarian)"], ["kulkepviselet", "Hungarian embassies and consulates"]],
+        check: "Appointment booked" },
+      { t: "Bring with you",
+        list: [
+          "EU/EEA or Swiss citizens: a valid <strong>passport or national ID card</strong>",
+          "Other citizens: a valid <strong>passport</strong>",
+          "An <strong>email address</strong> you check regularly",
+          "Your smartphone"
+        ],
+        check: "Visited in person with my ID" },
+      { t: "Turn on two-step login",
+        d: "Your Client Gate account is created on the spot. At home, install an authenticator app (for example Google Authenticator or Microsoft Authenticator) and turn on <strong>Client Gate+</strong> login (in Hungarian: <em>Ügyfélkapu+</em>).",
+        note: "The DÁP mobile app is generally not available to foreign citizens, and you cannot register for it at an embassy or consulate.",
+        links: [["ukplusz", "Client Gate+ help (in Hungarian)"]],
+        check: "Client Gate+ turned on" }
+    ],
+
+    utB: {
+      eyebrow: "Your steps: the lawyer route",
+      h: "A lawyer does it for you"
+    },
+    bSteps: [
+      { t: "Ask us for a lawyer’s contact details",
+        d: "Reply to the person who sent you this guide and ask for the contact details of a lawyer we work with.",
+        check: "Asked us for a lawyer’s contact details" },
+      { t: "Sign the power of attorney",
+        d: "The lawyer prepares the power of attorney and tells you how to sign it and which documents to send.",
+        check: "Power of attorney signed and sent" },
+      { t: "The lawyer registers the Company Gate",
+        d: "They act as the <strong>Company Gate administrator</strong> and add us as case handlers.",
+        check: "Lawyer registered the Company Gate" },
+      { t: "We accept the invitation",
+        d: "and confirm to you that everything is in order.",
+        check: "Confirmation from us" }
+    ],
+
+    kesz: {
+      eyebrow: "Summary",
+      h: "Your checklist",
+      routes: { igen: "Already has Client Gate+", a: "Your own Client Gate+", b: "Lawyer route" },
+      checkHint: "Tick off what you have done. Ticks are only saved in this browser.",
+      oursT: "What do we provide?",
+      ours: "We send the details of the colleagues to be added as case handlers in a separate <strong>Excel spreadsheet</strong>, attached to this guide.",
+      oursB: "The lawyer receives the details of the colleagues to be added as case handlers directly from us, so there is nothing you need to do.",
+      contactT: "Any questions?",
+      contactText: "Reply to the person who sent you this guide and we will be happy to help."
+    },
+
+
+    glossaryT: "Glossary",
+    glossary: [
+      ["Company Gate (Cégkapu)", "The company’s official electronic mailbox."],
+      ["Company Gate administrator (Cégkapu-megbízott)", "The person who registered the Company Gate and manages access to it (you or your lawyer)."],
+      ["Case handler (ügykezelő)", "Someone the administrator has given access to the company’s letters. That will be us."],
+      ["Client Gate+ (Ügyfélkapu+)", "Hungarian electronic identification for individuals, with two-step login."],
+      ["DÁP", "The Digital Citizenship mobile app, an alternative to Client Gate+, mainly for Hungarian citizens."],
+      ["Kormányablak", "A Hungarian government customer service office."]
+    ],
+
+    footerT: "Questions? Get in touch.",
+    footerNote: "This guide reflects the rules as of October 2026. Sources: tarhely.gov.hu, kau.gov.hu, information from Hungarian embassies and consulates."
+  },
+
+  de: {
+    langName: "Deutsch",
+    docTitle: "Firmenportal-Leitfaden",
+    logoSub: "Firmenportal-Leitfaden",
+    trackLabel: "Fortschritt",
+    track: ["Firmenportal", "Kundenportal", "Ihre Situation", "Ihre Schritte", "Zusammenfassung"],
+    back: "Zurück",
+    next: "Weiter",
+    toSummary: "Zur Zusammenfassung",
+    restart: "Neu beginnen",
+    otherRoute: "Andere Möglichkeit ansehen",
+
+    start: {
+      eyebrow: "Für unsere neuen Mandanten",
+      h: "Zugang zum offiziellen Postfach Ihrer Gesellschaft",
+      lead: "Damit wir im Namen Ihrer Gesellschaft mit den ungarischen Behörden kommunizieren können, benötigen wir Zugang zu ihrem offiziellen elektronischen Postfach, dem <strong>Ungarischen Firmenportal</strong> (ungarisch: <em>Cégkapu</em>). Dieser Leitfaden zeigt Ihnen anhand weniger kurzer Fragen, was zu tun ist.",
+      meta: "Lesezeit ca. 5 Minuten",
+      routeTitle: "So hängt alles zusammen",
+      route: [
+        ["Ungarisches Firmenportal", "Das offizielle Postfach der Gesellschaft für die Kommunikation mit den Behörden."],
+        ["Ungarisches Kundenportal (Ügyfélkapu+)", "Damit identifiziert sich die Person, die das Firmenportal registriert."],
+        ["Sie oder Ihr Rechtsanwalt", "Registriert das Firmenportal und verwaltet die Zugänge."],
+        ["Wir als Sachbearbeiter", "Wir erledigen die Behördenangelegenheiten der Gesellschaft."]
+      ],
+      btn: "Los geht’s"
+    },
+
+    cegkapu: {
+      eyebrow: "Was ist das Ungarische Firmenportal?",
+      h: "Das offizielle elektronische Postfach Ihrer Gesellschaft",
+      bullets: [
+        "Seit 2018 ist es für jede ungarische Gesellschaft verpflichtend.",
+        "Die Steuerbehörde (NAV), das Firmengericht und andere Behörden senden ihre Schreiben hierher. Fast die gesamte offizielle Korrespondenz der Gesellschaft läuft darüber, deshalb muss es regelmäßig überwacht werden."
+      ],
+      askT: "Worum bitten wir Sie?",
+      ask: "Fügen Sie uns im Firmenportal als <strong>Sachbearbeiter</strong> (<em>ügykezelő</em>) hinzu. So nehmen wir die Schreiben der Steuerbehörden an die Gesellschaft entgegen, handeln bei Bedarf im Namen der Gesellschaft gegenüber den Steuerbehörden und informieren Sie über die nötigen Schritte, wenn Ihre Entscheidung oder Mitwirkung erforderlich ist.",
+      whyT: "Was haben Sie davon?",
+      why: "In Angelegenheiten, die mit unseren Leistungen zusammenhängen, sind wir der Ansprechpartner Ihrer Gesellschaft gegenüber den Steuerbehörden. Sie müssen sich nicht mit der ungarischen Behördenkorrespondenz befassen: Wir behalten im Blick, was eingeht, und melden uns nur, wenn wir Sie wirklich brauchen.",
+      rolesT: "Wer ist wer im Firmenportal?",
+      roles: [
+        ["Firmenportal-Verwalter (Cégkapu-megbízott)", "Registriert das Firmenportal und verwaltet die Zugänge. Diese Rolle übernehmen nicht wir: Sie übernehmen sie selbst oder ein von Ihnen beauftragter Rechtsanwalt.", ""],
+        ["Sachbearbeiter (ügykezelő)", "Hat Zugriff auf die offiziellen Schreiben der Gesellschaft und erledigt die Behördenangelegenheiten.", "Das sind wir"]
+      ]
+    },
+
+    ugyfelkapu: {
+      eyebrow: "Was wird benötigt?",
+      h: "Ungarisches Kundenportal: digitale Identifizierung",
+      bullets: [
+        "Das Firmenportal muss von einer <strong>natürlichen Person</strong> registriert werden. In der Regel ist das der Geschäftsführer der Gesellschaft oder eine von der Gesellschaft bevollmächtigte Person.",
+        "Diese Person benötigt eine ungarische elektronische Identifizierung: das <strong>Kundenportal</strong> mit zweistufiger Anmeldung (Benutzername, Passwort und ein Code aus einer Authenticator-App auf dem Smartphone) oder die Mobil-App <strong>DÁP</strong>.",
+        "Das funktioniert wie ein ungarischer digitaler Personalausweis."
+      ],
+      callout: "Einen Zugang zum Kundenportal können auch ausländische Staatsangehörige beantragen. Die DÁP-App steht dagegen in erster Linie ungarischen Staatsangehörigen zur Verfügung. Als ausländischer Staatsangehöriger ist das Kundenportal daher Ihr Weg."
+    },
+
+    kerdes: {
+      eyebrow: "Ihre Situation",
+      h: "Hat der Geschäftsführer der Gesellschaft Zugang zum Kundenportal oder zur DÁP-App?",
+      yes: "Ja",
+      no: "Nein",
+      unsure: "Ich weiß es nicht",
+      hint: "Falls der Geschäftsführer noch nie persönlich in einem ungarischen Regierungsbüro (kormányablak) oder Konsulat war, um dies einzurichten, besteht höchstwahrscheinlich kein Zugang."
+    },
+
+    nem: {
+      eyebrow: "Ihre Situation",
+      h: "Sie haben zwei Möglichkeiten",
+      unsureNote: "Wenn Sie unsicher sind, gehen Sie davon aus, dass kein Zugang besteht. Stellt sich heraus, dass doch einer besteht, steht Ihnen der Weg „Ja“ weiterhin offen.",
+      unsureLink: "Doch Zugang vorhanden? Hier klicken.",
+      what: "Was bedeutet das?",
+      plus: "Vorteil",
+      minus: "Was Sie erwartet",
+      a: {
+        t: "Eigener Zugang zum Kundenportal",
+        what: "Sie erscheinen einmal persönlich in einem ungarischen Regierungsbüro (kormányablak) in Ungarn oder in der ungarischen Botschaft bzw. dem Konsulat in Ihrem Land. Danach registrieren Sie das Firmenportal selbst und werden dessen Verwalter.",
+        plus: "Kostenlos. Sie verfügen direkt über das Postfach der Gesellschaft.",
+        minus: "Sie müssen einen Termin buchen und persönlich hingehen.",
+        btn: "Diesen Weg wählen"
+      },
+      b: {
+        t: "Ein Rechtsanwalt erledigt es für Sie",
+        what: "Sie bevollmächtigen einen ungarischen Rechtsanwalt, der das Firmenportal registriert, die Rolle des Verwalters übernimmt und uns als Sachbearbeiter hinzufügt.",
+        plus: "Keine Reise und kein Termin nötig.",
+        minus: "Anwaltshonorar. Sie müssen eine Vollmacht unterschreiben.",
+        btn: "Diesen Weg wählen"
+      }
+    },
+
+    igen: {
+      eyebrow: "Ihre Schritte",
+      h: "Registrieren Sie das Firmenportal und fügen Sie uns hinzu",
+      altT: "Möchten Sie die Rolle des Firmenportal-Verwalters nicht selbst übernehmen?",
+      altBtn: "Weg über einen Rechtsanwalt wählen"
+    },
+    yesSteps: [
+      { t: "Melden Sie sich auf der Registrierungsseite des Firmenportals an",
+        d: "Melden Sie sich mit Ihren Zugangsdaten für das Kundenportal oder die DÁP-App an.",
+        links: [["tarhely", "Registrierung im Firmenportal (tarhely.gov.hu)"]],
+        check: "Auf tarhely.gov.hu angemeldet" },
+      { t: "Registrieren Sie das Firmenportal der Gesellschaft",
+        d: "Wählen Sie die Rechtsform der Gesellschaft und geben Sie ihre Daten ein. Das System prüft sie anhand des Firmenregisters. Damit werden Sie <strong>Firmenportal-Verwalter</strong>.",
+        note: "Ist die Gesellschaft bereits im Firmenportal registriert, entfällt dieser Schritt.",
+        check: "Firmenportal registriert" },
+      { t: "Fügen Sie uns als Sachbearbeiter hinzu",
+        d: "<span class=\"path\">Beállítások (Einstellungen) → Gesellschaft auswählen → Ügykezelő regisztrálása (Sachbearbeiter registrieren)</span>",
+        note: "Die Daten der als Sachbearbeiter hinzuzufügenden Mitarbeiter senden wir Ihnen in der beigefügten Excel-Tabelle.",
+        check: "Uns als Sachbearbeiter hinzugefügt" },
+      { t: "Geben Sie uns Bescheid",
+        d: "Wir nehmen die Einladung an und bestätigen Ihnen, dass alles in Ordnung ist.",
+        check: "Uns Bescheid gegeben" }
+    ],
+
+    utA: {
+      eyebrow: "Ihre Schritte: eigener Zugang zum Kundenportal",
+      h: "Zuerst das Kundenportal, dann das Firmenportal",
+      part1: "Zugang zum Kundenportal beantragen",
+      part2: "Danach: Firmenportal und Sachbearbeiter"
+    },
+    aSteps: [
+      { t: "Buchen Sie einen Termin",
+        d: "In Ungarn in einem beliebigen Regierungsbüro (kormányablak), im Ausland in der ungarischen Botschaft oder dem Konsulat in Ihrem Land.",
+        links: [["idopont", "Terminbuchung Regierungsbüro (auf Ungarisch)"], ["kulkepviselet", "Ungarische Auslandsvertretungen"]],
+        check: "Termin gebucht" },
+      { t: "Bringen Sie mit",
+        list: [
+          "EU-/EWR- oder Schweizer Staatsangehörige: gültiger <strong>Reisepass oder Personalausweis</strong>",
+          "Andere Staatsangehörige: gültiger <strong>Reisepass</strong>",
+          "Eine <strong>E-Mail-Adresse</strong>, die Sie regelmäßig lesen",
+          "Ihr Smartphone"
+        ],
+        check: "Persönlich mit Ausweisdokument erschienen" },
+      { t: "Aktivieren Sie die zweistufige Anmeldung",
+        d: "Ihr Konto für das Kundenportal wird vor Ort eingerichtet. Installieren Sie zu Hause eine Authenticator-App (z. B. Google Authenticator oder Microsoft Authenticator) und aktivieren Sie die zweistufige Anmeldung (auf Ungarisch: <strong>Ügyfélkapu+</strong>).",
+        note: "Die DÁP-App steht ausländischen Staatsangehörigen in der Regel nicht zur Verfügung, und in Botschaften oder Konsulaten kann man sich dafür nicht registrieren.",
+        links: [["ukplusz", "Hilfe zum Kundenportal (auf Ungarisch)"]],
+        check: "Zweistufige Anmeldung aktiviert" }
+    ],
+
+    utB: {
+      eyebrow: "Ihre Schritte: über einen Rechtsanwalt",
+      h: "Ein Rechtsanwalt erledigt es für Sie"
+    },
+    bSteps: [
+      { t: "Bitten Sie uns um einen Anwaltskontakt",
+        d: "Antworten Sie der Person, die Ihnen diesen Leitfaden geschickt hat, und bitten Sie um die Kontaktdaten eines Rechtsanwalts, mit dem wir zusammenarbeiten.",
+        check: "Anwaltskontakt bei uns angefragt" },
+      { t: "Unterschreiben Sie die Vollmacht",
+        d: "Der Rechtsanwalt erstellt die Vollmacht und teilt Ihnen mit, wie sie zu unterschreiben ist und welche Unterlagen Sie ihm noch senden müssen.",
+        check: "Vollmacht unterschrieben und versandt" },
+      { t: "Der Rechtsanwalt registriert das Firmenportal",
+        d: "Er übernimmt die Rolle des <strong>Firmenportal-Verwalters</strong> und fügt uns als Sachbearbeiter hinzu.",
+        check: "Firmenportal vom Rechtsanwalt registriert" },
+      { t: "Wir nehmen die Einladung an",
+        d: "und bestätigen Ihnen, dass alles in Ordnung ist.",
+        check: "Bestätigung von uns" }
+    ],
+
+    kesz: {
+      eyebrow: "Zusammenfassung",
+      h: "Ihre Checkliste",
+      routes: { igen: "Zugang zum Kundenportal vorhanden", a: "Eigener Zugang zum Kundenportal", b: "Über einen Rechtsanwalt" },
+      checkHint: "Haken Sie ab, was erledigt ist. Die Häkchen werden nur in diesem Browser gespeichert.",
+      oursT: "Was stellen wir bereit?",
+      ours: "Die Daten der als Sachbearbeiter hinzuzufügenden Mitarbeiter senden wir Ihnen in einer separaten <strong>Excel-Tabelle</strong>, die diesem Leitfaden beigefügt ist.",
+      oursB: "Die Daten der als Sachbearbeiter hinzuzufügenden Mitarbeiter erhält der Rechtsanwalt direkt von uns. Sie müssen dafür nichts tun.",
+      contactT: "Haben Sie Fragen?",
+      contactText: "Antworten Sie der Person, die Ihnen diesen Leitfaden geschickt hat. Wir helfen Ihnen gern weiter."
+    },
+
+
+    glossaryT: "Glossar",
+    glossary: [
+      ["Ungarisches Firmenportal (Cégkapu)", "Das offizielle elektronische Postfach der Gesellschaft."],
+      ["Firmenportal-Verwalter (Cégkapu-megbízott)", "Die Person, die das Firmenportal registriert hat und die Zugänge verwaltet (Sie oder Ihr Rechtsanwalt)."],
+      ["Sachbearbeiter (ügykezelő)", "Eine Person, der der Verwalter Zugriff auf die Schreiben der Gesellschaft gewährt hat. Das werden wir sein."],
+      ["Ungarisches Kundenportal (Ügyfélkapu+)", "Elektronische Identifizierung für Privatpersonen in Ungarn, mit zweistufiger Anmeldung."],
+      ["DÁP", "Die Mobil-App „Digitale Staatsbürgerschaft“, eine Alternative zum Kundenportal, in erster Linie für ungarische Staatsangehörige."],
+      ["Kormányablak", "Ungarisches Bürgerbüro der Regierung."]
+    ],
+
+    footerT: "Fragen? Sprechen Sie uns an.",
+    footerNote: "Dieser Leitfaden entspricht dem Stand der Vorschriften vom Oktober 2026. Quellen: tarhely.gov.hu, kau.gov.hu, Informationen der ungarischen Auslandsvertretungen."
+  }
+};
+
+/* ============================================================
+   MŰKÖDÉS
+   ============================================================ */
+const SCREENS = ["start", "cegkapu", "ugyfelkapu", "kerdes", "igen", "nem", "ut-a", "ut-b", "kesz-igen", "kesz-a", "kesz-b"];
+const STAGE = { start: -1, cegkapu: 0, ugyfelkapu: 1, kerdes: 2, nem: 2, igen: 3, "ut-a": 3, "ut-b": 3, "kesz-igen": 4, "kesz-a": 4, "kesz-b": 4 };
+
+/* Nyelv: 1) a linkben megadott (#en, #de-ut-b), 2) a látogató korábbi választása,
+   3) a böngésző nyelve, 4) angol. */
+let lang = "en";
+let unsure = false;
+const checks = {};
+try { Object.assign(checks, JSON.parse(localStorage.getItem("ckp-checks") || "{}")); } catch (e) {}
+{
+  let stored = null;
+  try { stored = localStorage.getItem("ckp-lang"); } catch (e) {}
+  const nav = (navigator.language || "").slice(0, 2).toLowerCase();
+  lang = STR[stored] ? stored : STR[nav] ? nav : "en";
+}
+
+const S = () => STR[lang];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const val = v => /^\[.*\]$/.test(v) ? `<span class="todo">${esc(v)}</span>` : esc(v);
+
+/* A hash formája: [nyelv-]képernyő, pl. #ut-b, #de, #de-ut-b */
+function parseHash() {
+  let h = location.hash.replace("#", "");
+  let l = null;
+  const m = h.match(/^([a-z]{2})(?:-(.+))?$/);
+  if (m && STR[m[1]]) { l = m[1]; h = m[2] || "start"; }
+  return { l, id: SCREENS.includes(h) ? h : "start" };
+}
+function current() {
+  return parseHash().id;
+}
+function go(id) {
+  const target = `${lang}-${id}`;
+  if (location.hash.replace("#", "") === target) render(true);
+  else location.hash = target;
+}
+function setLang(l) {
+  lang = l;
+  try { localStorage.setItem("ckp-lang", lang); } catch (e) {}
+  try { history.replaceState(null, "", `#${lang}-${current()}`); } catch (e) {}
+}
+
+function linksHtml(links) {
+  if (!links) return "";
+  return `<div class="links">${links.map(([k, label]) => `<a href="${LINKS[k]}" target="_blank" rel="noopener">${label}</a>`).join("")}</div>`;
+}
+function stepHtml(s, n) {
+  return `<li class="step">
+    <span class="num" aria-hidden="true">${n}</span>
+    <div class="body">
+      <h3>${s.t}</h3>
+      ${s.d ? `<p>${s.d}</p>` : ""}
+      ${s.list ? `<ul>${s.list.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}
+      ${s.note ? `<p class="note">${s.note}</p>` : ""}
+      ${linksHtml(s.links)}
+    </div>
+  </li>`;
+}
+const backBtn = to => `<button class="btn btn--ghost" data-go="${to}">← ${S().back}</button>`;
+const head = (eyebrow, h, extra = "") => `<div class="head"><span class="eyebrow">${eyebrow}</span><h2 id="screen-title">${h}</h2>${extra}</div>`;
+
+function routeSteps(route) {
+  const s = S();
+  if (route === "igen") return s.yesSteps;
+  if (route === "a") return s.aSteps.concat(s.yesSteps);
+  return s.bSteps;
+}
+
+const VIEWS = {
+  start() {
+    const s = S().start;
+    return `<div class="head">
+        <span class="eyebrow">${s.eyebrow}</span>
+        <h1 id="screen-title">${s.h}</h1>
+      </div>
+      <p class="lead">${s.lead}</p>
+      <div class="panel">
+        <h3>${s.routeTitle}</h3>
+        <div class="route">${s.route.map(([b, t]) => `<div><b>${b}</b><span>${t}</span></div>`).join("")}</div>
+      </div>
+      <div class="actions"><button class="btn" data-go="cegkapu">${s.btn} →</button><span class="meta">${s.meta}</span></div>`;
+  },
+  cegkapu() {
+    const s = S().cegkapu;
+    return `${head(s.eyebrow, s.h)}
+      <ul class="bullets">${s.bullets.map(b => `<li>${b}</li>`).join("")}</ul>
+      <div class="pair">
+        <div class="panel"><h3>${s.askT}</h3><p>${s.ask}</p></div>
+        <div class="panel"><h3>${s.whyT}</h3><p>${s.why}</p></div>
+      </div>
+      <div class="head"><h3>${s.rolesT}</h3></div>
+      <dl class="roles">${s.roles.map(([t, d, tag]) => `<div class="role"><dt>${t}${tag ? ` <span class="tag">${tag}</span>` : ""}</dt><dd>${d}</dd></div>`).join("")}</dl>
+      <div class="actions">${backBtn("start")}<button class="btn" data-go="ugyfelkapu">${S().next} →</button></div>`;
+  },
+  ugyfelkapu() {
+    const s = S().ugyfelkapu;
+    return `${head(s.eyebrow, s.h)}
+      <ul class="bullets">${s.bullets.map(b => `<li>${b}</li>`).join("")}</ul>
+      <p class="callout">${s.callout}</p>
+      <div class="actions">${backBtn("cegkapu")}<button class="btn" data-go="kerdes">${S().next} →</button></div>`;
+  },
+  kerdes() {
+    const s = S().kerdes;
+    return `${head(s.eyebrow, s.h)}
+      <div class="answers">
+        <button class="answer" data-go="igen">${s.yes}</button>
+        <button class="answer" data-go="nem">${s.no}</button>
+        <button class="answer" data-go="nem" data-unsure="1">${s.unsure}</button>
+      </div>
+      <p class="hint">${s.hint}</p>
+      <div class="actions">${backBtn("ugyfelkapu")}</div>`;
+  },
+  nem() {
+    const s = S().nem;
+    const card = (k, letter) => `<div class="choice">
+        <span class="letter" aria-hidden="true">${letter}</span>
+        <h3>${s[k].t}</h3>
+        <dl>
+          <div><dt>${s.what}</dt><dd>${s[k].what}</dd></div>
+          <div><dt>${s.plus}</dt><dd>${s[k].plus}</dd></div>
+          <div><dt>${s.minus}</dt><dd>${s[k].minus}</dd></div>
+        </dl>
+        <button class="btn" data-go="ut-${k}">${s[k].btn} →</button>
+      </div>`;
+    return `${head(s.eyebrow, s.h, unsure ? `<p class="hint">${s.unsureNote} <button class="textbtn" data-go="igen">${s.unsureLink}</button></p>` : "")}
+      <div class="choices">${card("a", "A")}${card("b", "B")}</div>
+      <div class="actions">${backBtn("kerdes")}</div>`;
+  },
+  igen() {
+    const s = S().igen;
+    return `${head(s.eyebrow, s.h)}
+      <ol class="steps">${S().yesSteps.map((st, i) => stepHtml(st, i + 1)).join("")}</ol>
+      <div class="panel"><h3>${s.altT}</h3><div><button class="btn btn--ghost" data-go="ut-b">${s.altBtn} →</button></div></div>
+      <div class="actions">${backBtn("kerdes")}<button class="btn" data-go="kesz-igen">${S().toSummary} →</button></div>`;
+  },
+  "ut-a"() {
+    const s = S().utA, A = S().aSteps, Y = S().yesSteps;
+    return `${head(s.eyebrow, s.h)}
+      <ol class="steps">
+        <li class="divider">${s.part1}</li>
+        ${A.map((st, i) => stepHtml(st, i + 1)).join("")}
+        <li class="divider">${s.part2}</li>
+        ${Y.map((st, i) => stepHtml(st, A.length + i + 1)).join("")}
+      </ol>
+      <div class="actions">${backBtn("nem")}<button class="btn" data-go="kesz-a">${S().toSummary} →</button></div>`;
+  },
+  "ut-b"() {
+    const s = S().utB;
+    return `${head(s.eyebrow, s.h)}
+      <ol class="steps">${S().bSteps.map((st, i) => stepHtml(st, i + 1)).join("")}</ol>
+      <div class="actions">${backBtn("nem")}<button class="btn" data-go="kesz-b">${S().toSummary} →</button></div>`;
+  },
+  kesz(route) {
+    const s = S().kesz;
+    const steps = routeSteps(route);
+    const ours = `<p>${route === "b" ? s.oursB : s.ours}</p>`;
+    return `${head(s.eyebrow, s.h, `<div><span class="chip">${s.routes[route]}</span></div>`)}
+      <ul class="checklist">${steps.map((st, i) => {
+        const id = `chk-${route}-${i}`;
+        return `<li><label for="${id}"><input type="checkbox" id="${id}" ${checks[id] ? "checked" : ""}><span>${i + 1}. ${st.check}</span></label></li>`;
+      }).join("")}</ul>
+      <p class="hint">${s.checkHint}</p>
+      <div class="pair">
+        <div class="panel"><h3>${s.oursT}</h3>${ours}</div>
+        <div class="panel"><h3>${s.contactT}</h3><p>${s.contactText}</p></div>
+      </div>
+      <div class="actions">
+        ${backBtn(route === "igen" ? "igen" : "ut-" + route)}
+        <button class="btn btn--ghost" data-go="kerdes">${S().otherRoute}</button>
+        <button class="textbtn" data-go="start">${S().restart}</button>
+      </div>`;
+  }
+};
+
+function renderChrome() {
+  const s = S();
+  document.documentElement.lang = lang;
+  document.title = s.docTitle;
+  document.getElementById("logo").innerHTML = `${val(OFFICE.name)}<small>${s.logoSub}</small>`;
+  document.querySelector(".track").setAttribute("aria-label", s.trackLabel);
+
+  const langs = Object.keys(STR);
+  const lb = document.getElementById("langs");
+  lb.hidden = langs.length < 2;
+  lb.innerHTML = langs.map(l => `<button data-lang="${l}" aria-pressed="${l === lang}" title="${STR[l].langName}">${l.toUpperCase()}</button>`).join("");
+
+  const g = document.getElementById("glossary");
+  const wasOpen = g.open;
+  g.innerHTML = `<summary>${s.glossaryT}</summary><dl>${s.glossary.map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join("")}</dl>`;
+  g.open = wasOpen;
+
+  document.getElementById("footer").innerHTML = `
+    <h2>${s.footerT}</h2>
+    <div class="contact"><span>${val(OFFICE.contactName)}</span><span>${val(OFFICE.email)}</span><span>${val(OFFICE.phone)}</span>${OFFICE.web ? `<a href="${OFFICE.web}" target="_blank" rel="noopener">${esc(OFFICE.web.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</a>` : ""}</div>
+    <p class="small">${val(OFFICE.name)} · ${s.footerNote}</p>`;
+}
+
+function render(focus) {
+  const id = current();
+  const stage = STAGE[id];
+  const el = document.getElementById("screen");
+  el.innerHTML = id.startsWith("kesz-") ? VIEWS.kesz(id.slice(5)) : VIEWS[id]();
+  document.getElementById("track").innerHTML = S().track.map((t, i) => {
+    const cls = i < stage ? "done" : i === stage ? "current" : "";
+    return `<li class="${cls}" ${i === stage ? 'aria-current="step"' : ""}><span class="n">${i < stage ? "✓" : i + 1}</span><span class="t">${t}</span></li>`;
+  }).join("");
+  if (focus) {
+    window.scrollTo({ top: 0 });
+    el.focus({ preventScroll: true });
+  }
+}
+
+document.addEventListener("click", e => {
+  const g = e.target.closest("[data-go]");
+  if (g) {
+    if (g.dataset.go === "nem") unsure = !!g.dataset.unsure;
+    go(g.dataset.go);
+    return;
+  }
+  const l = e.target.closest("[data-lang]");
+  if (l) {
+    setLang(l.dataset.lang);
+    renderChrome(); render(false);
+  }
+});
+document.addEventListener("change", e => {
+  if (e.target.matches(".checklist input")) {
+    checks[e.target.id] = e.target.checked;
+    try { localStorage.setItem("ckp-checks", JSON.stringify(checks)); } catch (err) {}
+  }
+});
+window.addEventListener("hashchange", () => {
+  const { l } = parseHash();
+  if (l && l !== lang) { lang = l; renderChrome(); }
+  render(true);
+});
+
+{
+  const { l } = parseHash();
+  if (l) lang = l;
+}
+renderChrome();
+render(false);
+</script>

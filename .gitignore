@@ -1,0 +1,8 @@
+# Belső munkajegyzetek – csak helyben
+FOLYTATAS.md
+01-tenyosszesito-es-magyar-szoveg.md
+
+# Helyi eszközbeállítások és generált köztes fájlok
+.claude/
+pdf/build/
+__pycache__/
